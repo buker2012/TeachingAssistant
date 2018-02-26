@@ -27,9 +27,6 @@ export default class ClassStudent extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'searchlist/fetch',
-    });
-    dispatch({
       type: 'user/classes',
       payload: {
         userid: localStorage.getItem('userid'),
