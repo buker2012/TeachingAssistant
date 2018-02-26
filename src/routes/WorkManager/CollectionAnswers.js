@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Tabs, Card, Table, Form, Button, Divider, Modal, Steps, Alert, DatePicker, Spin, Popconfirm } from 'antd';
+import { Tabs, Card, Table, Form, Button, Divider, Modal, Steps, Alert, DatePicker, Spin, Popconfirm, Select } from 'antd';
 
 import Result from '../../components/Result';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -10,9 +10,12 @@ import styles from './Default.less';
 
 const { TabPane } = Tabs;
 const { Step } = Steps;
+const { Option } = Select;
 
 @Form.create()
-@connect(({ survey, loading }) => ({
+@connect(({ user, searchlist, survey, loading }) => ({
+  user,
+  searchlist,
   survey,
   importedloading: loading.effects['survey/imported'],
   notimportloading: loading.effects['survey/notimport'],
@@ -23,7 +26,10 @@ export default class CollectionAnswers extends PureComponent {
     visible: false,
     currentSurvey: undefined,
     currentStep: 0,
-    collectionInfo: null,
+    collectionResult: {
+      type: 'success',
+      title: '',
+    },
     importedPagination: {
       page: 1,
       pageSize: 10,
@@ -31,6 +37,12 @@ export default class CollectionAnswers extends PureComponent {
   }
 
   componentDidMount() {
+    this.props.dispatch({
+      type: 'user/classes',
+      payload: {
+        userid: localStorage.getItem('userid'),
+      },
+    });
     this.loadNotimport();
   }
 
@@ -39,6 +51,12 @@ export default class CollectionAnswers extends PureComponent {
       activeTabKey: e,
     });
   }
+
+  getMajorName = (id) => {
+    const { searchlist: { majors } } = this.props;
+    const maj = majors.find(item => item.id === id);
+    return maj.name;
+  };
 
   loadNotimport() {
     const { dispatch } = this.props;
@@ -194,7 +212,7 @@ export default class CollectionAnswers extends PureComponent {
   }
 
   step1 = () => {
-    const { form, dispatch } = this.props;
+    const { user: { classes }, form, dispatch } = this.props;
     const { currentSurvey } = this.state;
     const { getFieldDecorator, validateFields } = form;
 
@@ -221,15 +239,22 @@ export default class CollectionAnswers extends PureComponent {
             payload: {
               id: currentSurvey.id,
               work_date: moment(values.work_date).format('YYYY-MM-DD'),
+              classes: values.classes,
             },
             callback: (result) => {
-              if (result.errcode === 1) {
+              if (result.errcode === 0) {
                 this.setState({
-                  collectionInfo: result.errmsg,
+                  collectionResult: {
+                    type: 'success',
+                    title: `收集完成，${result.notsubmitted}个未提交`,
+                  },
                 });
               } else {
                 this.setState({
-                  collectionInfo: null,
+                  collectionResult: {
+                    type: 'error',
+                    title: result.errmsg,
+                  },
                 });
               }
               this.setState({
@@ -242,19 +267,12 @@ export default class CollectionAnswers extends PureComponent {
     };
 
     return (
-      <Form layout="horizontal">
+      <Form layout="horizontal" require={false}>
         <Alert
           showIcon
           message="请务必填写正确的作业日期，这是一项重要的成绩计算参数。"
           style={{ marginBottom: 24 }}
         />
-        <Form.Item
-          {...formItemLayout}
-          className={styles.stepFormText}
-          label="作业编号"
-        >
-          {currentSurvey ? currentSurvey.id : '' }
-        </Form.Item>
         <Form.Item
           {...formItemLayout}
           className={styles.stepFormText}
@@ -280,7 +298,6 @@ export default class CollectionAnswers extends PureComponent {
         <Form.Item
           {...formItemLayout}
           label="作业日期"
-          required={false}
         >
           {getFieldDecorator('work_date', {
             rules: [{
@@ -288,6 +305,30 @@ export default class CollectionAnswers extends PureComponent {
             }],
           })(
             <DatePicker disabledDate={current => current && current > moment().endOf('day')} />
+          )}
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          label="关联班级"
+        >
+          {getFieldDecorator('classes', {
+            rules: [{
+              required: true, message: '至少选择一个班级',
+            }],
+          })(
+            <Select
+              mode="multiple"
+              placeholder="请选择"
+            >
+              {classes.map((cls) => {
+                return (
+                  <Option key={cls.class_id} value={cls.class_id}>
+                    {cls.grade}级{this.getMajorName(cls.majors_id)}-{cls.no}班
+                  </Option>
+                );
+              })
+              }
+            </Select>
           )}
         </Form.Item>
         <Form.Item
@@ -314,7 +355,7 @@ export default class CollectionAnswers extends PureComponent {
   }
 
   step3 = () => {
-    const { collectionInfo } = this.state;
+    const { collectionResult } = this.state;
 
     const actions = (
       <Button type="primary" onClick={() => { this.cancelModal(); this.loadNotimport(); }}>
@@ -323,8 +364,8 @@ export default class CollectionAnswers extends PureComponent {
     );
     return (
       <Result
-        type={collectionInfo ? 'error' : 'success'}
-        title={collectionInfo || '答卷收集完成'}
+        type={collectionResult.type}
+        title={collectionResult.title}
         actions={actions}
         className={styles.result}
       />

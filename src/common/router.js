@@ -98,7 +98,7 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['userlist', 'user', 'searchlist', 'classes'], () => import('../routes/WorkManager/UserList')),
     },
     '/workmanager/answer-collection': {
-      component: dynamicWrapper(app, ['survey'], () => import('../routes/WorkManager/CollectionAnswers')),
+      component: dynamicWrapper(app, ['survey', 'user', 'searchlist'], () => import('../routes/WorkManager/CollectionAnswers')),
     },
     '/exception/403': {
       component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
