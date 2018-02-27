@@ -87,7 +87,7 @@ export default class DayReport extends PureComponent {
 
     return (
       <Modal
-        title="班级学生作业成绩"
+        title="班级作业日报"
         visible={modalVisible}
         footer={null}
         onCancel={this.cancelModal}
