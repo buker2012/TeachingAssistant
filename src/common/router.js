@@ -100,6 +100,12 @@ export const getRouterData = (app) => {
     '/workmanager/answer-collection': {
       component: dynamicWrapper(app, ['survey', 'user', 'searchlist'], () => import('../routes/WorkManager/CollectionAnswers')),
     },
+    '/work-report/day': {
+      component: dynamicWrapper(app, ['workday'], () => import('../routes/WorkReport/DayReport')),
+    },
+    // '/work-report/week': {
+    //   component: dynamicWrapper(app, ['survey', 'user', 'searchlist'], () => import('../routes/WorkManager/CollectionAnswers')),
+    // },
     '/exception/403': {
       component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
     },

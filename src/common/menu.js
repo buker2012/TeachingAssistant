@@ -57,6 +57,18 @@ const menuData = [{
     name: '作业成绩查询',
     path: 'result-inquiry',
   }],
+}, {
+  name: '作业成绩报表',
+  icon: 'solution',
+  path: 'work-report',
+  authority: ['taurus', 'scorpio', 'pisces'],
+  children: [{
+    name: '班级作业日报',
+    path: 'day',
+  }, {
+    name: '班级作业周报',
+    path: 'week',
+  }],
 },
 ];
 

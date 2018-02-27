@@ -31,5 +31,9 @@ const proxy = {
   'POST /survey/imported/': server,
   'POST /survey/remove/': server,
   'POST /survey/collection_answers/': server,
+
+  'POST /work-report/effect-date/': server,
+  'POST /work-report/day/': server,
+  
 }
 export default noProxy ? {} : delay(proxy, 1000);

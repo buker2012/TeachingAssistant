@@ -266,8 +266,12 @@ export default class CollectionAnswers extends PureComponent {
       });
     };
 
+    const disabledDate = (current) => {
+      return current < moment().day(0) || current > moment().endOf('day');
+    };
+
     return (
-      <Form layout="horizontal" require={false}>
+      <Form layout="horizontal">
         <Alert
           showIcon
           message="请务必填写正确的作业日期，这是一项重要的成绩计算参数。"
@@ -304,7 +308,7 @@ export default class CollectionAnswers extends PureComponent {
               required: true, message: '必须填写作业日期',
             }],
           })(
-            <DatePicker disabledDate={current => current && current > moment().endOf('day')} />
+            <DatePicker disabledDate={disabledDate} />
           )}
         </Form.Item>
         <Form.Item
@@ -323,7 +327,7 @@ export default class CollectionAnswers extends PureComponent {
               {classes.map((cls) => {
                 return (
                   <Option key={cls.class_id} value={cls.class_id}>
-                    {cls.grade}级{this.getMajorName(cls.majors_id)}-{cls.no}班
+                    {cls.grade}级{this.getMajorName(cls.majors_id)}{cls.no}班
                   </Option>
                 );
               })

@@ -57,7 +57,6 @@ export async function removeUserClasses(param) {
   });
 }
 
-
 export async function querySections() {
   return request('/sysprofile/sections/');
 }
@@ -121,6 +120,20 @@ export async function removeSurvey(param) {
 
 export async function collectionAnswers(param) {
   return request('/survey/collection_answers/', {
+    method: 'POST',
+    body: param,
+  });
+}
+
+export async function queryRptWorkDay(param) {
+  return request('/work-report/day/', {
+    method: 'POST',
+    body: param,
+  });
+}
+
+export async function queryWorkDayEffectDate(param) {
+  return request('/work-report/effect-date/', {
     method: 'POST',
     body: param,
   });
