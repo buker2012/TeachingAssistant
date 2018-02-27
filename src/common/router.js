@@ -101,7 +101,7 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['survey', 'user', 'searchlist'], () => import('../routes/WorkManager/CollectionAnswers')),
     },
     '/work-report/day': {
-      component: dynamicWrapper(app, ['workday'], () => import('../routes/WorkReport/DayReport')),
+      component: dynamicWrapper(app, ['workday', 'achievement'], () => import('../routes/WorkReport/DayReport')),
     },
     // '/work-report/week': {
     //   component: dynamicWrapper(app, ['survey', 'user', 'searchlist'], () => import('../routes/WorkManager/CollectionAnswers')),

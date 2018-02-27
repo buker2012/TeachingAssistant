@@ -138,3 +138,10 @@ export async function queryWorkDayEffectDate(param) {
     body: param,
   });
 }
+
+export async function queryAchievement(param) {
+  return request('/achievement/get/', {
+    method: 'POST',
+    body: param,
+  });
+}

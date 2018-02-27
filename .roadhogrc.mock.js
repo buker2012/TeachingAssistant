@@ -34,6 +34,8 @@ const proxy = {
 
   'POST /work-report/effect-date/': server,
   'POST /work-report/day/': server,
+
+  'POST /achievement/get/': server,
   
 }
 export default noProxy ? {} : delay(proxy, 1000);
